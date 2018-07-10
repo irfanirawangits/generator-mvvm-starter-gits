@@ -1,0 +1,160 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.3'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+/*
+ * App compilation configuration
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
+        testInstrumentationRunner "<%= appPackage %>.TestTestRunner"
+    }
+    productFlavors {
+        env_test {
+            applicationId '<%= appPackage %>.test'
+            versionCode 1
+            versionName "1.0.0"
+        }
+        env_prod {
+            applicationId '<%= appPackage %>'
+            versionCode 1
+            versionName "1.0.0"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+apply plugin: 'idea'
+idea {
+    module {
+        testOutputDir = file('build/test-classes/debug')
+    }
+}
+
+apply from: "../gradle/jacoco.gradle"
+
+/*
+ * App dependencies
+ */
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile(rootProject.ext.libs.appcompat)
+    compile(rootProject.ext.libs.cardview)
+    compile(rootProject.ext.libs.recyclerview)
+    compile(rootProject.ext.libs.support)
+    compile(rootProject.ext.libs.support_annotations)
+    compile(rootProject.ext.libs.design)
+    compile(rootProject.ext.libs.dagger2)
+    apt(rootProject.ext.libs.dagger2_compiler)
+    compile(rootProject.ext.libs.butterknife)
+    apt(rootProject.ext.libs.butterknife_compiler)
+    compile(rootProject.ext.libs.rxandroid)
+    compile(rootProject.ext.libs.rxjava)
+    compile(rootProject.ext.libs.timber)
+    compile(rootProject.ext.libs.retrofit)
+    compile(rootProject.ext.libs.gson)
+
+    compile 'com.cocosw:bottomsheet:1.+@aar'
+    compile 'joda-time:joda-time:2.4'
+    compile 'org.joda:joda-money:0.9.1'
+    compile 'org.joda:joda-convert:1.7'
+    compile 'com.atomicleopard:expressive:0.9.5'
+    compile 'com.google.guava:guava:18.0'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'commons-io:commons-io:2.4'
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'org.hibernate:hibernate-validator:4.3.2.Final'
+    compile 'com.mixpanel.android:mixpanel-android:4.3.1@aar'
+
+    debugCompile rootProject.ext.libs.leakcanary
+    releaseCompile rootProject.ext.libs.leakcanary_noop
+    testCompile rootProject.ext.libs.leakcanary_noop
+
+    androidTestCompile (rootProject.ext.libs.support_annotations)
+    androidTestCompile (rootProject.ext.libs.gson)
+
+    androidTestCompile(rootProject.ext.libs.junit) {
+        exclude module: 'javawriter'
+    }
+    androidTestCompile(rootProject.ext.libs.espresso) {
+        exclude module: 'javawriter'
+    }
+//    // TODO https://code.google.com/p/android-test-kit/issues/detail?id=157
+//    //androidTestCompile rootProject.ext.libs.espresso_contrib
+    androidTestCompile('com.android.support.test:runner:0.4') {
+        exclude module: 'javawriter'
+    }
+    androidTestCompile('com.android.support.test:rules:0.4') {
+        exclude module: 'javawriter'
+    }
+
+    androidTestCompile('com.squareup.spoon:spoon-client:1.1.10') {
+        exclude module: 'javawriter'
+    }
+    androidTestCompile(rootProject.ext.libs.mockito)
+}
+
+apply plugin: 'spoon'
+spoon {
+    debug = true
+    noAnimations = true
+
+    if (project.hasProperty('spoonClassName')) {
+        className = project.spoonClassName
+
+        if (project.hasProperty('spoonMethodName')) {
+            methodName = project.spoonMethodName
+        }
+    }
+
+    if (project.hasProperty('spoonTestSize')) {
+        testSize = project.spoonTestSize
+    }
+}

@@ -1,0 +1,53 @@
+# generator-android-starter 
+<img align="right" height="260" src="https://dl.dropboxusercontent.com/u/83836922/as_icon.png">
+
+> [Yeoman](http://yeoman.io) generator
+
+This generator will create a skeleton Android app built atop a collection of awesome Android libraries 
+by [Square](http://square.github.io/) using a single Activity/multiple view style.
+
+##### Included libraries
+
+* [Dagger 2 - dependency injection](http://google.github.io/dagger/)
+* [Retrofit - type-safe REST client](https://github.com/square/retrofit)
+* [RXAndroid - reactive extensions for Android](https://github.com/ReactiveX/RxAndroid)
+
+The project also generates with a set of extremely useful test helper classes and static methods along with
+example tests showing how to use them.
+
+
+## Getting Started
+
+### Install Yeoman
+
+Not every new computer comes with a Yeoman pre-installed. He lives in the [npm](https://npmjs.org) package repository. You only have to ask for him once, then he packs up and moves into your hard drive. *Make sure you clean up, he likes new and shiny things.*
+
+```bash
+npm install -g yo
+```
+
+### Install the Generator
+
+To install generator-android-starter from npm, run:
+
+```bash
+npm install -g generator-android-starter
+```
+
+Finally, initiate the generator:
+
+```bash
+yo android-starter
+```
+
+This will create a fully functioning Android app skeleton.
+
+### Run it
+
+Once you've generated the skeleton app simply import into Android Studio
+
+
+
+## License
+
+MIT
